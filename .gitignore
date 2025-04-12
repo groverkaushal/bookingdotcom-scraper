@@ -1,0 +1,10 @@
+# VS Code
+.vscode/
+.history/
+
+# Selenium/WebDriver downloads (optional, adjust if needed)
+*.log
+*.tmp
+
+# Python
+__pycache__/
