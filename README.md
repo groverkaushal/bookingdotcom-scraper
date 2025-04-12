@@ -58,6 +58,9 @@ python main.py
 
 Scraped hotel data will be saved in the directory defined by `OUTPUT_DIR_PATH` in your `.env` file.
 
+### Preview
+![Output Preview](./preview/image.png)
+
 ---
 
 ## 📄 License
