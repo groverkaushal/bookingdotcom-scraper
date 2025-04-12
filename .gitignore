@@ -8,3 +8,6 @@
 
 # Python
 __pycache__/
+
+# repo-specific
+outputs/
