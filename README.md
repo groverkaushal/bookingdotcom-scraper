@@ -5,6 +5,11 @@ It supports dynamic page interactions like scrolling and filter selection to cap
 
 ---
 
+## ⚠️ Disclaimer:
+This project is for educational and personal use only. Scraping content from websites may violate their Terms of Service. The author assumes no responsibility for how this tool is used. Use at your own risk.
+
+---
+
 ## 📦 Features
 
 - Search by currency, location, check-in/check-out dates, number of adults and total rooms.
