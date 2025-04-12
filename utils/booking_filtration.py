@@ -14,7 +14,7 @@ class BookingFiltration:
     def __init__(self, driver: WebDriver):
         self.driver = driver
 
-    def apply_star_rating(self, *star_values):
+    def apply_star_rating(self, star_values):
         wait = WebDriverWait(self.driver, 10)
 
         try:
@@ -38,12 +38,12 @@ class BookingFiltration:
                     self.driver.execute_script(
                         "arguments[0].scrollIntoView({block: 'center'});", checkbox
                     )
-                    time.sleep(0.5)  # Small delay to ensure element is properly in view
+                    time.sleep(0.5)
 
-                    # Click using JavaScript for better reliability
+                    # Click using JavaScript
                     self.driver.execute_script("arguments[0].click();", checkbox)
                     print(f"✅ CLICKED checkbox for {star} star(s)")
-                    time.sleep(0.5)  # Small delay between selections
+                    time.sleep(0.5)
 
                 except Exception as e:
                     print(f"[Error selecting {star} star rating] {str(e)}")

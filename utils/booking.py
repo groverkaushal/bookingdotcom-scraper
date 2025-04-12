@@ -2,20 +2,17 @@ import os
 import time
 
 import pandas as pd
-from prettytable import PrettyTable
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from utils.booking_filtration import BookingFiltration
-from utils.constants import BASE_URL
 
 
 class Booking(webdriver.Chrome):
-    def __init__(self, driver_path=r"./../selenium_drivers", teardown=False):
+    def __init__(self, driver_path, teardown=False):
         self.driver_path = driver_path
         self.teardown = teardown
         os.environ["PATH"] += self.driver_path
@@ -27,8 +24,8 @@ class Booking(webdriver.Chrome):
         if self.teardown:
             self.quit()
 
-    def land_first_page(self):
-        self.get(BASE_URL)
+    def land_first_page(self, base_url):
+        self.get(base_url)
         WebDriverWait(self, 10).until(
             lambda d: d.execute_script("return document.readyState") == "complete"
         )
@@ -59,9 +56,7 @@ class Booking(webdriver.Chrome):
         except:
             print("Dialog not displayed. continuing...")
 
-    def change_currency(
-        self, currency_variants=["U.S. Dollar", "USD", "US Dollar", "Dollar"]
-    ):
+    def change_currency(self, currency_variants):
         wait = WebDriverWait(self, 5)
         # Ensure the currency picker button is visible and clickable
         currency_button = wait.until(
@@ -113,6 +108,7 @@ class Booking(webdriver.Chrome):
         print(f"selected place to go: {place_to_go}")
 
     def select_dates(self, check_in_date, check_out_date):
+        # TODO: add a filter to raise if the dates are older than current date
         wait = WebDriverWait(self, 1)
 
         try:
@@ -140,7 +136,6 @@ class Booking(webdriver.Chrome):
             print(f"[Date Selection Error] {e}")
 
     def select_occupancy(self, occupancy_options):
-
         wait = WebDriverWait(self, 10)
 
         try:
@@ -189,11 +184,11 @@ class Booking(webdriver.Chrome):
         search_button = self.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
         search_button.click()
 
-    def apply_filtrations(self):
+    def apply_filtrations(self, star_values, sort_option):
         filtration = BookingFiltration(driver=self)
-        filtration.apply_star_rating(*[4, 5])
+        filtration.apply_star_rating(star_values)
 
-        filtration.select_sort_option("Price (lowest first)")
+        filtration.select_sort_option(sort_option)
 
     def get_search_result_count(self):
         """
@@ -217,7 +212,7 @@ class Booking(webdriver.Chrome):
             print(f"[❌ Error getting search result text] {e}")
             return None
 
-    def report_results(self, total_properties):
+    def report_results(self, total_properties, output_dir):
 
         # Function to safely extract inner text
         def safe_find_text(el, selector):
@@ -328,7 +323,10 @@ class Booking(webdriver.Chrome):
                 rows.append(hotel)
 
             df = pd.DataFrame(rows)
-            df.to_csv("./outputs/hotels.csv", index=False, encoding="utf-8", quoting=1)
+            os.makedirs(output_dir, exist_ok=True)
+            df.to_csv(
+                f"{output_dir}/hotels.csv", index=False, encoding="utf-8", quoting=1
+            )
 
             print("\n✅ Data saved to hotels.csv")
 
